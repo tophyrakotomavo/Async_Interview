@@ -3,6 +3,7 @@
 import Webcam from "react-webcam";
 import { ReactMediaRecorder } from "react-media-recorder";
 import { Button } from "@/components/ui";
+import { BtnReadyForMaintenance } from "@/app/interview/_components/btnReadyForMaintenace";
 import Link from "next/link";
 
 const WebcamMicroTest = () => (
@@ -12,15 +13,20 @@ const WebcamMicroTest = () => (
       render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
         <div>
           {status === 'idle' && 
-            <Button onClick={startRecording}>Start test</Button>
+            <div>
+              <Link href={'/'}>Back</Link>
+              <Button onClick={startRecording}>Start test</Button>
+            </div>
+            
           }
           {status === 'recording' &&
             <Button onClick={stopRecording}>Stop test</Button>
           }
           {mediaBlobUrl && 
             <div>
+              <BtnReadyForMaintenance/>
               <video src={mediaBlobUrl} controls autoPlay loop />
-              <Link  href='/interview'> <Button> Ready for maitenance </Button> </Link>
+              <Link href={'/'}>Back</Link>
             </div>
           }
         </div>
