@@ -13,7 +13,7 @@ export const useLogin = (redirectUrl?: string) => {
         return;
       }
       console.log('User signed up successfully:', data.email);
-      void router.push(redirectUrl ?? '/interview');
+      void router.push(redirectUrl ?? '/');
     } catch (error) {
       console.error('Error signing up:', error);
     }
