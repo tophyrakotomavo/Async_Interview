@@ -6,6 +6,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 import FaceDetection from '@mediapipe/face_detection';
 import { Camera } from '@mediapipe/camera_utils';
 import { useStop } from '@/app/interview/_hooks/useStop';
+import { Button } from '@/components/ui';
 
 export const Interview = () => {
   const handleStop = useStop()
@@ -53,10 +54,10 @@ export const Interview = () => {
         {detected === true && 
           <div className='absolute'>
             {status === 'idle' && (
-              <button onClick={startRecording}>Start Recording</button>
+              <Button onClick={startRecording}>Start interview</Button>
             )}
             {status === 'recording' && (
-              <button onClick={stopRecording}>Stop Recording</button>
+              <Button onClick={stopRecording}>Stop</Button>
             )}
           </div>
         }
