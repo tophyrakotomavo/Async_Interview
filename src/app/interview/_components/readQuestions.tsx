@@ -9,9 +9,10 @@ export const ReadQuestions = () => {
     <div>
       <h1>Questions</h1>
       {data?.map((qst) => (
-        qst.question
+        <li key={qst.question}>
+          {qst.question}
+        </li>
       ))}
     </div>
   )
 };
-
