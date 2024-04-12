@@ -1,11 +1,11 @@
 import { db } from "@/server/db";
 import { questions } from "@/server/db/schema";
+import { eq, ilike } from "drizzle-orm";
 
-export const getQuestion = async (searchQuestion:String) => {
-  const foundQuestionObject = (await db.select({question: questions.question}).from(questions)).find(question => question.question === searchQuestion);
+export const getQuestion = async (searchQuestion:string) => {
+  const foundQuestionObject = await db.select({value: questions.value}).from(questions).where(ilike(questions.value, `%${searchQuestion}%`))
 
-  // Si un objet a été trouvé, retourner la valeur de la propriété 'question'
-  // Sinon, retourner null ou une valeur par défaut
-  return foundQuestionObject ? foundQuestionObject.question : null;
+  
+  return foundQuestionObject;
 
 };

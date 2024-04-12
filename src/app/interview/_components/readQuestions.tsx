@@ -30,7 +30,7 @@ export const ReadQuestions = () => {
     setsearchValue(e.target.value);
     
   };
-  console.log(questiondata?.values);
+  console.log(questiondata);
   useEffect(() => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
