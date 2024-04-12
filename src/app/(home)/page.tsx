@@ -6,8 +6,8 @@ import { useSession } from "@/app/_hooks/useSession";
 import { BtnVerifyWebcam } from "./_components/btnVerifyWebcam";
 
 const Home = () => {
-  const { status } = useSession();
-
+  const { status, session } = useSession();
+  console.log("id user: ",session)
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
       {status === 'authenticated' &&

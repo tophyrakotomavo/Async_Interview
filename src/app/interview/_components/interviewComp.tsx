@@ -11,7 +11,7 @@ import { api } from '@/trpc/react';
 
 export const InterviewComp = () => {
   const {data} = api.interview.getAll.useQuery();
-  const handleStop = useStop()
+  const handleStop = useStop();
   const { webcamRef, isLoading, detected, facesDetected  } = useFaceDetection({
     mirrored: true,
     faceDetectionOptions: {

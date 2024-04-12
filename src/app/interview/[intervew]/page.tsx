@@ -2,14 +2,16 @@
 
 import { InterviewComp } from '@/app/interview/_components';
 
-const Interview = ({ params }: { params: { interview_id: string } }) => {
+
+const Interview = ({ params }: { params: { id: number } }) => {
 
   return (
     <div>
-      {params.interview_id}
+      {params.id}
       <InterviewComp />
     </div>
   );
 };
 
 export default Interview;
+ 
