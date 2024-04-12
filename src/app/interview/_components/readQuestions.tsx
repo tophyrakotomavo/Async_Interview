@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useEffect, useState } from "react";
 
 let debounceTimeout: string | number | NodeJS.Timeout | undefined;
@@ -25,23 +24,13 @@ export const ReadQuestions = () => {
   
   const { data: questiondata ,refetch} = api.questions.getOneQuestion.useQuery({searchQuestion: searchValue},{ enabled: enable });
 
-  
-  const changeValue = (e: any) => {
-    setsearchValue(e.target.value);
-    
-  };
-  console.log(questiondata);
   useEffect(() => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      refetch();
-    }, 500);
-  }, [searchValue, refetch]);
-
-  useEffect(() => {
+      void refetch();
+    }, 100);
     if (questiondata !== null) return setenable(false);
-  });
-
+  }, [searchValue, refetch, questiondata]);
 
   return(
     <div>
@@ -51,35 +40,27 @@ export const ReadQuestions = () => {
           {qst.value}
         </li>
       ))}
-     
-        ------------
-
-        <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle><Input onChange={changeValue}/></DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        {questiondata?.map((qst) => (
-        <li key={qst.value}>
-          {qst.value}
-        </li>
-      ))}
-        
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-        -------------
-     
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline">Edit Profile</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle><Input onChange={(e) => setsearchValue(e.target.value)}/></DialogTitle>
+            <DialogDescription>
+              Make changes to your profile here. Click save when you&apos;re done.
+            </DialogDescription>
+          </DialogHeader>
+          {questiondata?.map((qst) => (
+            <li key={qst.value}>
+              {qst.value}
+            </li>
+          ))}
+          <DialogFooter>
+            <Button type="submit">Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
-
-
   )
 };

@@ -1,3 +1,3 @@
 export type inputText = {
-  question: string
+  value: string
 };

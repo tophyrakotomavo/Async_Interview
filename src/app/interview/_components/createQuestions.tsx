@@ -18,7 +18,7 @@ export const CreateQuestions = () =>{
 
     try {
       const { error } = await supabase.from('Questions').insert({
-        question: data.question,
+        value: data.value,
         
       });
       
@@ -42,8 +42,8 @@ export const CreateQuestions = () =>{
           <CardContent>
             <div className="flex flex-col space-y-1.5">
               <Label>Enter your question here</Label>
-              <Input id="questions" placeholder="Type here" {...register('question')}/>
-              {errors.question && <span>This field is required</span>}
+              <Input id="questions" placeholder="Type here" {...register('value')}/>
+              {errors.value && <span>This field is required</span>}
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">

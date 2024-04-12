@@ -10,7 +10,7 @@ import { Button } from '@/components/ui';
 import { api } from '@/trpc/react';
 
 export const InterviewComp = () => {
-  const {data} = api.interview.getAll.useQuery();
+  api.interview.getAll.useQuery();
   const handleStop = useStop();
   const { webcamRef, isLoading, detected, facesDetected  } = useFaceDetection({
     mirrored: true,
