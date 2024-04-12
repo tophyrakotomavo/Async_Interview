@@ -13,7 +13,6 @@ export const CreateQuestions = () =>{
   } = useForm<inputText>();
 
   const onSubmit = async (data: inputText) => {
-    console.log(data)
     try {
       const { error } = await supabase.from('Questions').insert({
         question: data.question,

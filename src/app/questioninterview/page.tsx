@@ -1,9 +1,11 @@
 'use client'
 
 import { CreateQuestions, ReadQuestions } from '@/app/interview/_components';
-const Questioninterview = () =>{
- 
+import { useSession } from "@/app/_hooks/useSession";
 
+const Questioninterview = () =>{
+  useSession('/auth');
+ 
   return(
     <>
     <CreateQuestions/>
@@ -12,4 +14,4 @@ const Questioninterview = () =>{
   );
 };
 
-export default Questioninterview ;
+export default Questioninterview;

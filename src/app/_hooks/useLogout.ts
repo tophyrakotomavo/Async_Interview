@@ -6,7 +6,7 @@ export const useLogout = (redirectUrl?: string) => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    void router.push(redirectUrl ?? '/login');
+    void router.push(redirectUrl ?? '/auth');
   };
 
   return handleLogout;

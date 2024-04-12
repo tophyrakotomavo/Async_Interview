@@ -6,13 +6,17 @@ import { useSession } from "@/app/_hooks/useSession";
 import { BtnVerifyWebcam } from "./_components/btnVerifyWebcam";
 
 const Home = () => {
-  const { status } = useSession('/auth');
+  const { status } = useSession();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+      {status === 'authenticated' &&
+        <LogoutButton/> 
+      }
+      {status === 'unauthenticated' &&
+        <Link href={'/auth'}> Login </Link>
+      }
       <BtnVerifyWebcam/>
-      <LogoutButton/>
-      <p>{status}</p>
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
@@ -44,6 +48,6 @@ const Home = () => {
       </div>
     </main>
   );
-}
+};
 
 export default Home;

@@ -14,14 +14,14 @@ export const auth = pgSchema("auth");
 export const questions = pgTable("Questions", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint("id", { mode: "number" }).primaryKey().notNull(),
-	question: varchar("question").default(''),
+	value: varchar("value").default(''),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 });
 
 export const response = pgTable("Response", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint("id", { mode: "number" }).primaryKey().notNull(),
-	response: text("response"),
+	value: text("value"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 });
 
@@ -31,7 +31,6 @@ export const interview = pgTable("Interview", {
 	userId: uuid("user_id").defaultRandom().references(() => users.id),
 	candidat: varchar("candidat"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	status: text("status").default('pending'),
 });
 
 export const interviewQuestionResponse = pgTable("InterviewQuestionResponse", {
@@ -41,9 +40,9 @@ export const interviewQuestionResponse = pgTable("InterviewQuestionResponse", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	interviewId: bigint("interview_id", { mode: "number" }).references(() => interview.id),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	questionText: bigint("questionText", { mode: "number" }).references(() => questions.id),
+	questionId: bigint("question_id", { mode: "number" }).references(() => questions.id),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	response: bigint("response", { mode: "number" }).references(() => response.id),
+	responseId: bigint("response_id", { mode: "number" }).references(() => response.id),
 });
 
 export const auditLogEntries = auth.table("audit_log_entries", {
@@ -51,7 +50,7 @@ export const auditLogEntries = auth.table("audit_log_entries", {
 	id: uuid("id").primaryKey().notNull(),
 	payload: json("payload"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	ipAddress: varchar("ip_address", { length: 64 }).default('').notNull(),
+	ipAddress: varchar("ip_address", { length: 64 }).notNull(),
 },
 (table) => {
 	return {
@@ -283,14 +282,14 @@ export const users = auth.table("users", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
 	phone: text("phone"),
 	phoneConfirmedAt: timestamp("phone_confirmed_at", { withTimezone: true, mode: 'string' }),
-	phoneChange: text("phone_change").default(''),
-	phoneChangeToken: varchar("phone_change_token", { length: 255 }).default(''),
+	phoneChange: text("phone_change"),
+	phoneChangeToken: varchar("phone_change_token", { length: 255 }),
 	phoneChangeSentAt: timestamp("phone_change_sent_at", { withTimezone: true, mode: 'string' }),
 	confirmedAt: timestamp("confirmed_at", { withTimezone: true, mode: 'string' }),
-	emailChangeTokenCurrent: varchar("email_change_token_current", { length: 255 }).default(''),
+	emailChangeTokenCurrent: varchar("email_change_token_current", { length: 255 }),
 	emailChangeConfirmStatus: smallint("email_change_confirm_status").default(0),
 	bannedUntil: timestamp("banned_until", { withTimezone: true, mode: 'string' }),
-	reauthenticationToken: varchar("reauthentication_token", { length: 255 }).default(''),
+	reauthenticationToken: varchar("reauthentication_token", { length: 255 }),
 	reauthenticationSentAt: timestamp("reauthentication_sent_at", { withTimezone: true, mode: 'string' }),
 	isSsoUser: boolean("is_sso_user").default(false).notNull(),
 	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
