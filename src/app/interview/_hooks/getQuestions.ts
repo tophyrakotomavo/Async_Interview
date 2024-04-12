@@ -3,7 +3,7 @@ import { questions } from "@/server/db/schema";
 
 export const getQuestions = async () =>{
 
-  const listQuestions = await db.select({question: questions.question}).from(questions);
+  const listQuestions = await db.select({value: questions.value}).from(questions);
 
   return listQuestions;
   

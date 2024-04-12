@@ -15,9 +15,7 @@ export const CreateQuestions = () =>{
   const utils = api.useUtils()
 
   const onSubmit = async (data: inputText) => {
-    console.log(data)
-    
-     
+
     try {
       const { error } = await supabase.from('Questions').insert({
         question: data.question,
