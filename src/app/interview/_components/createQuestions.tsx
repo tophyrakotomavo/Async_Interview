@@ -4,6 +4,7 @@ import  { useForm } from "react-hook-form";
 import { Button, Input, Card, CardContent, CardFooter, CardHeader, CardTitle, Label } from "@/components/ui";
 import { supabase } from "@/lib";
 import type { inputText } from "@/app/interview/_type";
+import { api } from "@/trpc/react";
 
 export const CreateQuestions = () =>{
   const {
@@ -11,17 +12,23 @@ export const CreateQuestions = () =>{
     handleSubmit,
     formState: { errors },
   } = useForm<inputText>();
+  const utils = api.useUtils()
 
   const onSubmit = async (data: inputText) => {
     console.log(data)
+    
+     
     try {
       const { error } = await supabase.from('Questions').insert({
         question: data.question,
+        
       });
+      
       if (error) {
         console.error(error.message);
         return;
       }
+      await utils.questions.getAll.refetch(); 
     } catch (error) {
       console.error(error);
     }
