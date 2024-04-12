@@ -8,9 +8,8 @@ import { api } from "@/trpc/react";
 import { useSession } from "../_hooks/useSession";
 
  const Createinterview = () =>{
-  useSession();
+   const {session} = useSession();
   
-  const {session} = useSession();
   const {
     register,
     handleSubmit,
