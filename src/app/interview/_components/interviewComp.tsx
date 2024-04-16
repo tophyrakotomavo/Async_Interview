@@ -10,7 +10,7 @@ import { Button } from '@/components/ui';
 
 export const InterviewComp = () => {
   const handleStop = useStop();
-  const { webcamRef, isLoading, detected, facesDetected } = useFaceDetection({
+  const { webcamRef, detected } = useFaceDetection({
     mirrored: true,
     faceDetectionOptions: {
       model: 'short',
@@ -34,13 +34,6 @@ export const InterviewComp = () => {
   
   return (
     <div>
-      <div className='fixed bottom-4 right-5'>
-        <p>{`status: ${status}`}</p>
-        <p>{`Loading: ${isLoading}`}</p>
-        <p>{`Face Detected: ${detected}`}</p> 
-        <p>{`Number of faces detected: ${facesDetected}`}</p>
-      </div>
-
       <div className='relative flex justify-center'>
         <Webcam
           ref={webcamRef}
