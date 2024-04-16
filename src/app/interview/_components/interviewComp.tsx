@@ -7,12 +7,10 @@ import FaceDetection from '@mediapipe/face_detection';
 import { Camera } from '@mediapipe/camera_utils';
 import { useStop } from '@/app/interview/_hooks/useStop';
 import { Button } from '@/components/ui';
-import { api } from '@/trpc/react';
 
 export const InterviewComp = () => {
-  api.interview.getAll.useQuery();
   const handleStop = useStop();
-  const { webcamRef, isLoading, detected, facesDetected  } = useFaceDetection({
+  const { webcamRef, isLoading, detected, facesDetected } = useFaceDetection({
     mirrored: true,
     faceDetectionOptions: {
       model: 'short',
@@ -42,6 +40,7 @@ export const InterviewComp = () => {
         <p>{`Face Detected: ${detected}`}</p> 
         <p>{`Number of faces detected: ${facesDetected}`}</p>
       </div>
+
       <div className='relative flex justify-center'>
         <Webcam
           ref={webcamRef}
@@ -59,6 +58,9 @@ export const InterviewComp = () => {
             )}
             {status === 'recording' && (
               <Button onClick={stopRecording}>Stop</Button>
+            )}
+            {status === 'stopped' && (
+              <Button onClick={startRecording}>Start interview</Button>
             )}
           </div>
         }

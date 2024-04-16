@@ -4,7 +4,6 @@ import  { useForm } from "react-hook-form";
 import { Button, Input, Card, CardContent, CardFooter, CardHeader, CardTitle, Label } from "@/components/ui";
 import { supabase } from "@/lib";
 import type { inputText } from "@/app/createinterview/_type";
-import { api } from "@/trpc/react";
 import { useSession } from "../_hooks/useSession";
 
  const Createinterview = () =>{
@@ -15,7 +14,6 @@ import { useSession } from "../_hooks/useSession";
     handleSubmit,
     formState: { errors },
   } = useForm<inputText>();
-  const utils = api.useUtils()
 
   const onSubmit = async (data: inputText) => {
 
