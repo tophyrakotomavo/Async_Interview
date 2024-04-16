@@ -2,7 +2,7 @@
 
 import Webcam from 'react-webcam';
 import { type CameraOptions, useFaceDetection } from 'react-use-face-detection';
-import { useReactMediaRecorder } from "react-media-recorder";
+import { ReactMediaRecorder } from "react-media-recorder";
 import FaceDetection from '@mediapipe/face_detection';
 import { Camera } from '@mediapipe/camera_utils';
 import { Button } from '@/components/ui';
@@ -24,38 +24,44 @@ const WebcamMicroTest= () => {
         height: 600,
       }),
   });
-
-  const {
-    status,
-    startRecording,
-    stopRecording,
-  } = useReactMediaRecorder({ video: true });
   
   return (
     <div>
       <div className='fixed top-4 left-5'>
-        <p>{`status: ${status}`}</p>
         <p>{`Loading: ${isLoading}`}</p>
         <p>{`Face Detected: ${detected}`}</p> 
         <p>{`Number of faces detected: ${facesDetected}`}</p>
       </div>
-
-      <div className='relative flex justify-center'>
-        <Webcam
-          ref={webcamRef}
-          mirrored
-          style={{
-            height: 600,
-            width: 600,
-            position: 'absolute',
-          }}
+      <div>
+        <ReactMediaRecorder
+          audio
+          video
+          render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+            <div>
+              {status === 'idle' && <Button onClick={startRecording}>Start Recording</Button>}
+              {status === 'recording' && <Button onClick={stopRecording}>Stop Recording</Button>}
+              {mediaBlobUrl && <video src={mediaBlobUrl} controls autoPlay loop />}
+            </div>
+          )}
         />
+      </div>
+      <div className='relative flex justify-center'>
+          <Webcam
+            ref={webcamRef}
+            mirrored
+            style={{
+              height: 600,
+              width: 600,
+              position: 'absolute',
+            }}
+          />
+
         {detected === true && 
-          <div className='absolute'>
-            <span> Keep your position to <Link href={`/interview`}> Go to the interview</Link></span>
+          <div className='fixed bottom-6 right-3'>
+            <span > Keep your position to <Link href={`/interview`}> Go to the interview</Link></span>
           </div>
         }
-        {detected === false && 'Make your face visible'}
+        {detected === false && <span className='fixed bottom-6 right-3'>Make your face visible</span>}
       </div>
     </div>
   );
