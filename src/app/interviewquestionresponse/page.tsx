@@ -1,10 +1,8 @@
 'use client'
 
 import { api } from "@/trpc/react";
-import { useSession } from "../_hooks/useSession";
 
  const Interviewquestionresponse = () =>{
-   const {session} = useSession();
   
    const { data } = api.interviewquestionresponse.getAll.useQuery();
   
@@ -12,7 +10,7 @@ import { useSession } from "../_hooks/useSession";
   return(
     <div>
       {data?.map((qst) => (
-       <li>{qst.Questions?.value}</li>
+       <li key={qst.Questions.id}>{qst.Questions?.value}</li>
       ))}
     </div>
   );

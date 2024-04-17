@@ -19,6 +19,7 @@ const WebcamMicroTest= () => {
     }),
     camera: ({ mediaSrc, onFrame }: CameraOptions) =>
       new Camera(mediaSrc, {
+        facingMode: 'user',
         onFrame,
         width: 600,
         height: 600,
@@ -32,36 +33,43 @@ const WebcamMicroTest= () => {
         <p>{`Face Detected: ${detected}`}</p> 
         <p>{`Number of faces detected: ${facesDetected}`}</p>
       </div>
-      <div>
-        <ReactMediaRecorder
-          audio
-          video
-          render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
-            <div>
-              {status === 'idle' && <Button onClick={startRecording}>Start Recording</Button>}
-              {status === 'recording' && <Button onClick={stopRecording}>Stop Recording</Button>}
-              {mediaBlobUrl && <video src={mediaBlobUrl} controls autoPlay loop />}
-            </div>
-          )}
-        />
-      </div>
       <div className='relative flex justify-center'>
-          <Webcam
-            ref={webcamRef}
-            mirrored
-            style={{
-              height: 600,
-              width: 600,
-              position: 'absolute',
-            }}
-          />
-
+        <Webcam
+          audio
+          ref={webcamRef}
+          mirrored
+          style={{
+            height: 600,
+            width: 600,
+            position: 'absolute',
+          }}
+        />
         {detected === true && 
           <div className='fixed bottom-6 right-3'>
-            <span > Keep your position to <Link href={`/interview`}> Go to the interview</Link></span>
+            <div className='fixed right-5 top-3'>
+              <ReactMediaRecorder
+                audio={true}
+                video
+                render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+                  <div>
+                    {status === 'idle' && <Button onClick={startRecording}>Start test</Button>}
+                    {status === 'recording' && <Button onClick={stopRecording}>Stop Recording</Button>}
+                    {mediaBlobUrl && (
+                      <div>
+                        <span > Keep your position to <Link href={`/interview`}> Go to the interview</Link></span>  
+                        <video src={mediaBlobUrl} controls autoPlay loop />
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
           </div>
         }
-        {detected === false && <span className='fixed bottom-6 right-3'>Make your face visible</span>}
+        {detected === false && 
+          <span className='fixed bottom-6 right-3'>Make your face visible or  <br />
+            verify your microphone
+          </span>}
       </div>
     </div>
   );

@@ -11,8 +11,8 @@ export const BtnReadyForInterview = () =>{
         <Link href={'/interview'}><Button> Go to the interview </Button></Link>
       }
       {status === 'unauthenticated' &&
-        <p>If you go to the interview, you must <Link href={'/auth'}>log in</Link></p>
+        <p>To pass the interview you must <Link href={'/auth'}>log in</Link></p>
       }
     </div>
   );
-}
+};
