@@ -6,7 +6,6 @@ import { ReactMediaRecorder } from "react-media-recorder";
 import FaceDetection from '@mediapipe/face_detection';
 import { Camera } from '@mediapipe/camera_utils';
 import { Button } from '@/components/ui';
-import Link from 'next/link';
 
 const WebcamMicroTest= () => {
   const { webcamRef, isLoading, detected, facesDetected } = useFaceDetection({
@@ -56,7 +55,7 @@ const WebcamMicroTest= () => {
                     {status === 'recording' && <Button onClick={stopRecording}>Stop Recording</Button>}
                     {mediaBlobUrl && (
                       <div>
-                        <span > Keep your position to <Link href={`/interview`}> Go to the interview</Link></span>  
+                        <span > Keep your position to Go to the interview</span>  
                         <video src={mediaBlobUrl} controls autoPlay loop />
                       </div>
                     )}

@@ -1,4 +1,5 @@
-import { pgTable, pgEnum, bigint, varchar, timestamp, text, uuid, pgSchema, index, json, unique, bigserial, boolean, uniqueIndex, inet, jsonb, smallint } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, bigint, varchar, timestamp, text, foreignKey, uuid, pgSchema, index, json, unique, bigserial, boolean, uniqueIndex, inet, jsonb, smallint } from "drizzle-orm/pg-core"
+  import { sql } from "drizzle-orm"
 
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
 export const keyType = pgEnum("key_type", ['aead-ietf', 'aead-det', 'hmacsha512', 'hmacsha256', 'auth', 'shorthash', 'generichash', 'kdf', 'secretbox', 'secretstream', 'stream_xchacha20'])
@@ -10,6 +11,8 @@ export const equalityOp = pgEnum("equality_op", ['eq', 'neq', 'lt', 'lte', 'gt',
 export const action = pgEnum("action", ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'ERROR'])
 
 export const auth = pgSchema("auth");
+
+export const user_role = pgEnum('userRole', ['admin', 'recruiter', 'candidate']);
 
 export const questions = pgTable("Questions", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -50,7 +53,7 @@ export const auditLogEntries = auth.table("audit_log_entries", {
 	id: uuid("id").primaryKey().notNull(),
 	payload: json("payload"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	ipAddress: varchar("ip_address", { length: 64 }).notNull(),
+	ipAddress: varchar("ip_address", { length: 64 }).default(''::character varying).notNull(),
 },
 (table) => {
 	return {
@@ -97,9 +100,9 @@ export const mfaFactors = auth.table("mfa_factors", {
 	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
 	friendlyName: text("friendly_name"),
 	// TODO: failed to parse database type 'auth.factor_type'
-	factorType: text("factor_type").notNull(),
+	factorType: unknown("factor_type").notNull(),
 	// TODO: failed to parse database type 'auth.factor_status'
-	status: text("status").notNull(),
+	status: unknown("status").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).notNull(),
 	secret: text("secret"),
@@ -181,7 +184,7 @@ export const flowState = auth.table("flow_state", {
 	userId: uuid("user_id"),
 	authCode: text("auth_code").notNull(),
 	// TODO: failed to parse database type 'auth.code_challenge_method'
-	codeChallengeMethod: text("code_challenge_method").notNull(),
+	codeChallengeMethod: unknown("code_challenge_method").notNull(),
 	codeChallenge: text("code_challenge").notNull(),
 	providerType: text("provider_type").notNull(),
 	providerAccessToken: text("provider_access_token"),
@@ -224,7 +227,7 @@ export const sessions = auth.table("sessions", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
 	factorId: uuid("factor_id"),
 	// TODO: failed to parse database type 'auth.aal_level'
-	aal: text("aal"),
+	aal: unknown("aal"),
 	notAfter: timestamp("not_after", { withTimezone: true, mode: 'string' }),
 	refreshedAt: timestamp("refreshed_at", { mode: 'string' }),
 	userAgent: text("user_agent"),
@@ -280,16 +283,16 @@ export const users = auth.table("users", {
 	isSuperAdmin: boolean("is_super_admin"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	phone: text("phone"),
+	phone: text("phone").default(NULL::character varying),
 	phoneConfirmedAt: timestamp("phone_confirmed_at", { withTimezone: true, mode: 'string' }),
-	phoneChange: text("phone_change"),
-	phoneChangeToken: varchar("phone_change_token", { length: 255 }),
+	phoneChange: text("phone_change").default(''::character varying),
+	phoneChangeToken: varchar("phone_change_token", { length: 255 }).default(''::character varying),
 	phoneChangeSentAt: timestamp("phone_change_sent_at", { withTimezone: true, mode: 'string' }),
 	confirmedAt: timestamp("confirmed_at", { withTimezone: true, mode: 'string' }),
-	emailChangeTokenCurrent: varchar("email_change_token_current", { length: 255 }),
+	emailChangeTokenCurrent: varchar("email_change_token_current", { length: 255 }).default(''::character varying),
 	emailChangeConfirmStatus: smallint("email_change_confirm_status").default(0),
 	bannedUntil: timestamp("banned_until", { withTimezone: true, mode: 'string' }),
-	reauthenticationToken: varchar("reauthentication_token", { length: 255 }),
+	reauthenticationToken: varchar("reauthentication_token", { length: 255 }).default(''::character varying),
 	reauthenticationSentAt: timestamp("reauthentication_sent_at", { withTimezone: true, mode: 'string' }),
 	isSsoUser: boolean("is_sso_user").default(false).notNull(),
 	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),

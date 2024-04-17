@@ -2,10 +2,9 @@
 
 import { api } from "@/trpc/react";
 
- const Interviewquestionresponse = () =>{
+export const ReadQuestionInterview = () =>{
   
-   const { data } = api.interviewquestionresponse.getAll.useQuery();
-  
+  const { data } = api.interviewquestionresponse.getAll.useQuery();
 
   return(
     <div>
@@ -15,5 +14,3 @@ import { api } from "@/trpc/react";
     </div>
   );
 };
-
-export default Interviewquestionresponse;
