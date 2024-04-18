@@ -9,6 +9,7 @@ import { Button } from '@/components/ui';
 
 const WebcamMicroTest= () => {
   const { webcamRef, isLoading, detected, facesDetected } = useFaceDetection({
+
     mirrored: true,
     faceDetectionOptions: {
       model: 'short',

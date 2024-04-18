@@ -34,6 +34,7 @@ export const InterviewComp = () => {
   
   return (
     <div>
+      {status}
       <div className='relative flex justify-center'>
         <Webcam
           ref={webcamRef}
@@ -53,7 +54,7 @@ export const InterviewComp = () => {
               <Button onClick={stopRecording}>Stop</Button>
             )}
             {status === 'stopped' && (
-              <Button onClick={startRecording}>Start interview</Button>
+              <Button onClick={startRecording}>Next Question</Button>
             )}
           </div>
         }

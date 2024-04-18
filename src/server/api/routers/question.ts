@@ -1,6 +1,6 @@
 import { publicProcedure, createTRPCRouter } from "../trpc";
-import { getQuestions } from "@/app/interview/_hooks/getQuestions";
-import { getQuestion } from "@/app/interview/_hooks/getQuestion";
+import { getQuestions } from "@/app/interview/questioninterview/_hooks/getQuestions";
+import { getQuestion } from "@/app/interview/questioninterview/_hooks/getQuestion";
 import z from 'zod';
 
 export const questionRouter = createTRPCRouter({

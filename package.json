@@ -10,7 +10,8 @@
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "generate": "drizzle-kit generate:pg"
   },
   "dependencies": {
     "@mediapipe/camera_utils": "^0.3.1675466862",

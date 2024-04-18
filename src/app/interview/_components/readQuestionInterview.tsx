@@ -9,7 +9,7 @@ export const ReadQuestionInterview = () =>{
   return(
     <div>
       {data?.map((qst) => (
-       <li key={qst.Questions.id}>{qst.Questions?.value}</li>
+        <li key={qst.Questions.id}>{qst.Questions?.value}</li>
       ))}
     </div>
   );
