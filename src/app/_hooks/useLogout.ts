@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
 
 export const useLogout = (redirectUrl?: string) => {
   const router = useRouter();

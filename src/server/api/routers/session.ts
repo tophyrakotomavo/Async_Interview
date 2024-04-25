@@ -1,4 +1,4 @@
-import { supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
 import { publicProcedure, createTRPCRouter } from "../trpc";
 
 export const sessionRouter = createTRPCRouter({

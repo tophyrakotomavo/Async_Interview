@@ -2,7 +2,7 @@
 
 import  { useForm } from "react-hook-form";
 import { Button, Input, Card, CardContent, CardFooter, CardHeader, CardTitle, Label, CardDescription } from "@/components/ui";
-import { supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
 import type { Credentials } from "@/app/auth/_type";
 import { useRouter } from "next/navigation";
 

@@ -2,7 +2,7 @@
 
 import  { useForm } from "react-hook-form";
 import { Button, Input, Card, CardContent, CardFooter, CardHeader, CardTitle, Label } from "@/components/ui";
-import { supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
 import type { inputText } from "@/app/interview/_type";
 import { api } from "@/trpc/react";
 
@@ -15,11 +15,9 @@ export const CreateQuestions = () =>{
   const utils = api.useUtils()
 
   const onSubmit = async (data: inputText) => {
-
     try {
       const { error } = await supabase.from('Questions').insert({
         value: data.value,
-        
       });
       
       if (error) {

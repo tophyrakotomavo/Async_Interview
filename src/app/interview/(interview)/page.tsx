@@ -5,11 +5,10 @@ import { ReadQuestionInterview } from '@/app/interview/_components';
 
 const Interview = () => {
 
-
   return (
     <div>
       <ReadQuestionInterview/>
-      <InterviewComp />
+      <InterviewComp/>
     </div>
   ); 
 };

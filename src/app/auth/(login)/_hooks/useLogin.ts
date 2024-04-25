@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
 import type { Credentials } from "@/app/auth/_type";
 
 export const useLogin = (redirectUrl?: string) => {

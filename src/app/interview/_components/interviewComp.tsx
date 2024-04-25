@@ -54,7 +54,7 @@ export const InterviewComp = () => {
               <Button onClick={stopRecording}>Stop</Button>
             )}
             {status === 'stopped' && (
-              <Button onClick={startRecording}>Next Question</Button>
+              <Button onClick={startRecording}>Next =&gt;</Button>
             )}
           </div>
         }

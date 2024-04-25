@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, bigint, varchar, timestamp, text, uuid, pgSchema, index, json, unique, bigserial, boolean, uniqueIndex, inet, jsonb, smallint } from "drizzle-orm/pg-core"
+import { pgTable, pgEnum, bigint, varchar, timestamp, uuid, pgSchema, index, json, text, uniqueIndex, unique, bigserial, boolean, inet, jsonb, smallint, primaryKey } from "drizzle-orm/pg-core"
 
 export const keyStatus = pgEnum("key_status", ['default', 'valid', 'invalid', 'expired'])
 export const keyType = pgEnum("key_type", ['aead-ietf', 'aead-det', 'hmacsha512', 'hmacsha256', 'auth', 'shorthash', 'generichash', 'kdf', 'secretbox', 'secretstream', 'stream_xchacha20'])
@@ -8,10 +8,9 @@ export const aalLevel = pgEnum("aal_level", ['aal1', 'aal2', 'aal3'])
 export const codeChallengeMethod = pgEnum("code_challenge_method", ['s256', 'plain'])
 export const equalityOp = pgEnum("equality_op", ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'in'])
 export const action = pgEnum("action", ['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'ERROR'])
-export const userRole = pgEnum('UserRole', ['admin', 'recruiter', 'candidate']);
+export const userRole = pgEnum("UserRole", ['admin', 'recruiter', 'candidate'])
 
 export const auth = pgSchema("auth");
-
 
 export const questions = pgTable("Questions", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -23,7 +22,7 @@ export const questions = pgTable("Questions", {
 export const response = pgTable("Response", {
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	id: bigint("id", { mode: "number" }).primaryKey().notNull(),
-	value: text("value"),
+	value: varchar("value"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
 });
 
@@ -33,18 +32,6 @@ export const interview = pgTable("Interview", {
 	userId: uuid("user_id").defaultRandom().references(() => users.id),
 	candidat: varchar("candidat"),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-});
-
-export const interviewQuestionResponse = pgTable("InterviewQuestionResponse", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint("id", { mode: "number" }).primaryKey().notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	interviewId: bigint("interview_id", { mode: "number" }).references(() => interview.id),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	questionId: bigint("question_id", { mode: "number" }).references(() => questions.id),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	responseId: bigint("response_id", { mode: "number" }).references(() => response.id),
 });
 
 export const auditLogEntries = auth.table("audit_log_entries", {
@@ -72,35 +59,11 @@ export const instances = auth.table("instances", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
 });
 
-export const refreshTokens = auth.table("refresh_tokens", {
-	instanceId: uuid("instance_id"),
-	id: bigserial("id", { mode: "bigint" }).primaryKey().notNull(),
-	token: varchar("token", { length: 255 }),
-	userId: varchar("user_id", { length: 255 }),
-	revoked: boolean("revoked"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	parent: varchar("parent", { length: 255 }),
-	sessionId: uuid("session_id").references(() => sessions.id, { onDelete: "cascade" } ),
-},
-(table) => {
-	return {
-		instanceIdIdx: index("refresh_tokens_instance_id_idx").on(table.instanceId),
-		instanceIdUserIdIdx: index("refresh_tokens_instance_id_user_id_idx").on(table.instanceId, table.userId),
-		parentIdx: index("refresh_tokens_parent_idx").on(table.parent),
-		sessionIdRevokedIdx: index("refresh_tokens_session_id_revoked_idx").on(table.revoked, table.sessionId),
-		updatedAtIdx: index("refresh_tokens_updated_at_idx").on(table.updatedAt),
-		refreshTokensTokenUnique: unique("refresh_tokens_token_unique").on(table.token),
-	}
-});
-
 export const mfaFactors = auth.table("mfa_factors", {
 	id: uuid("id").primaryKey().notNull(),
 	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
 	friendlyName: text("friendly_name"),
-	// TODO: failed to parse database type 'auth.factor_type'
 	factorType: text("factor_type").notNull(),
-	// TODO: failed to parse database type 'auth.factor_status'
 	status: text("status").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).notNull(),
@@ -114,9 +77,31 @@ export const mfaFactors = auth.table("mfa_factors", {
 	}
 });
 
+export const refreshTokens = auth.table("refresh_tokens", {
+	instanceId: uuid("instance_id"),
+	id: bigserial("id", { mode: "bigint" }).primaryKey().notNull(),
+	token: varchar("token", { length: 255 }),
+	userId: varchar("user_id", { length: 255 }),
+	revoked: boolean("revoked"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	parent: varchar("parent", { length: 255 }),
+	sessionId: uuid("session_id"),
+},
+(table) => {
+	return {
+		instanceIdIdx: index("refresh_tokens_instance_id_idx").on(table.instanceId),
+		instanceIdUserIdIdx: index("refresh_tokens_instance_id_user_id_idx").on(table.instanceId, table.userId),
+		parentIdx: index("refresh_tokens_parent_idx").on(table.parent),
+		sessionIdRevokedIdx: index("refresh_tokens_session_id_revoked_idx").on(table.revoked, table.sessionId),
+		updatedAtIdx: index("refresh_tokens_updated_at_idx").on(table.updatedAt),
+		refreshTokensTokenUnique: unique("refresh_tokens_token_unique").on(table.token),
+	}
+});
+
 export const mfaChallenges = auth.table("mfa_challenges", {
 	id: uuid("id").primaryKey().notNull(),
-	factorId: uuid("factor_id").notNull().references(() => mfaFactors.id, { onDelete: "cascade" } ),
+	factorId: uuid("factor_id").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
 	verifiedAt: timestamp("verified_at", { withTimezone: true, mode: 'string' }),
 	ipAddress: inet("ip_address").notNull(),
@@ -128,7 +113,7 @@ export const mfaChallenges = auth.table("mfa_challenges", {
 });
 
 export const mfaAmrClaims = auth.table("mfa_amr_claims", {
-	sessionId: uuid("session_id").notNull().references(() => sessions.id, { onDelete: "cascade" } ),
+	sessionId: uuid("session_id").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).notNull(),
 	authenticationMethod: text("authentication_method").notNull(),
@@ -149,7 +134,7 @@ export const ssoProviders = auth.table("sso_providers", {
 
 export const ssoDomains = auth.table("sso_domains", {
 	id: uuid("id").primaryKey().notNull(),
-	ssoProviderId: uuid("sso_provider_id").notNull().references(() => ssoProviders.id, { onDelete: "cascade" } ),
+	ssoProviderId: uuid("sso_provider_id").notNull(),
 	domain: text("domain").notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
@@ -162,7 +147,7 @@ export const ssoDomains = auth.table("sso_domains", {
 
 export const samlProviders = auth.table("saml_providers", {
 	id: uuid("id").primaryKey().notNull(),
-	ssoProviderId: uuid("sso_provider_id").notNull().references(() => ssoProviders.id, { onDelete: "cascade" } ),
+	ssoProviderId: uuid("sso_provider_id").notNull(),
 	entityId: text("entity_id").notNull(),
 	metadataXml: text("metadata_xml").notNull(),
 	metadataUrl: text("metadata_url"),
@@ -178,11 +163,28 @@ export const samlProviders = auth.table("saml_providers", {
 	}
 });
 
+export const samlRelayStates = auth.table("saml_relay_states", {
+	id: uuid("id").primaryKey().notNull(),
+	ssoProviderId: uuid("sso_provider_id").notNull(),
+	requestId: text("request_id").notNull(),
+	forEmail: text("for_email"),
+	redirectTo: text("redirect_to"),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	flowStateId: uuid("flow_state_id"),
+},
+(table) => {
+	return {
+		ssoProviderIdIdx: index("saml_relay_states_sso_provider_id_idx").on(table.ssoProviderId),
+		forEmailIdx: index("saml_relay_states_for_email_idx").on(table.forEmail),
+		createdAtIdx: index("saml_relay_states_created_at_idx").on(table.createdAt),
+	}
+});
+
 export const flowState = auth.table("flow_state", {
 	id: uuid("id").primaryKey().notNull(),
 	userId: uuid("user_id"),
 	authCode: text("auth_code").notNull(),
-	// TODO: failed to parse database type 'auth.code_challenge_method'
 	codeChallengeMethod: text("code_challenge_method").notNull(),
 	codeChallenge: text("code_challenge").notNull(),
 	providerType: text("provider_type").notNull(),
@@ -201,49 +203,9 @@ export const flowState = auth.table("flow_state", {
 	}
 });
 
-export const samlRelayStates = auth.table("saml_relay_states", {
-	id: uuid("id").primaryKey().notNull(),
-	ssoProviderId: uuid("sso_provider_id").notNull().references(() => ssoProviders.id, { onDelete: "cascade" } ),
-	requestId: text("request_id").notNull(),
-	forEmail: text("for_email"),
-	redirectTo: text("redirect_to"),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	flowStateId: uuid("flow_state_id").references(() => flowState.id, { onDelete: "cascade" } ),
-},
-(table) => {
-	return {
-		ssoProviderIdIdx: index("saml_relay_states_sso_provider_id_idx").on(table.ssoProviderId),
-		forEmailIdx: index("saml_relay_states_for_email_idx").on(table.forEmail),
-		createdAtIdx: index("saml_relay_states_created_at_idx").on(table.createdAt),
-	}
-});
-
-export const sessions = auth.table("sessions", {
-	id: uuid("id").primaryKey().notNull(),
-	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
-	factorId: uuid("factor_id"),
-	// TODO: failed to parse database type 'auth.aal_level'
-	aal: text("aal"),
-	notAfter: timestamp("not_after", { withTimezone: true, mode: 'string' }),
-	refreshedAt: timestamp("refreshed_at", { mode: 'string' }),
-	userAgent: text("user_agent"),
-	ip: inet("ip"),
-	tag: text("tag"),
-},
-(table) => {
-	return {
-		userIdCreatedAtIdx: index("user_id_created_at_idx").on(table.userId, table.createdAt),
-		userIdIdx: index("sessions_user_id_idx").on(table.userId),
-		notAfterIdx: index("sessions_not_after_idx").on(table.notAfter),
-	}
-});
-
 export const identities = auth.table("identities", {
 	providerId: text("provider_id").notNull(),
-	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	userId: uuid("user_id").notNull(),
 	identityData: jsonb("identity_data").notNull(),
 	provider: text("provider").notNull(),
 	lastSignInAt: timestamp("last_sign_in_at", { withTimezone: true, mode: 'string' }),
@@ -309,5 +271,56 @@ export const users = auth.table("users", {
 		emailPartialKey: uniqueIndex("users_email_partial_key").on(table.email),
 		isAnonymousIdx: index("users_is_anonymous_idx").on(table.isAnonymous),
 		usersPhoneKey: unique("users_phone_key").on(table.phone),
+	}
+});
+
+export const sessions = auth.table("sessions", {
+	id: uuid("id").primaryKey().notNull(),
+	userId: uuid("user_id").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }),
+	factorId: uuid("factor_id"),
+	aal: text("aal"),
+	notAfter: timestamp("not_after", { withTimezone: true, mode: 'string' }),
+	refreshedAt: timestamp("refreshed_at", { mode: 'string' }),
+	userAgent: text("user_agent"),
+	ip: inet("ip"),
+	tag: text("tag"),
+},
+(table) => {
+	return {
+		userIdCreatedAtIdx: index("user_id_created_at_idx").on(table.userId, table.createdAt),
+		userIdIdx: index("sessions_user_id_idx").on(table.userId),
+		notAfterIdx: index("sessions_not_after_idx").on(table.notAfter),
+	}
+});
+
+export const userRoleEnum = pgTable("UserRoleEnum", {
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint("id", { mode: "number" }).notNull(),
+	userRole: userRole("user_role").default('recruiter').notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	userId: uuid("user_id").notNull().references(() => users.id),
+},
+(table) => {
+	return {
+		userRoleEnumPkey: primaryKey({ columns: [table.id, table.userRole, table.userId], name: "UserRoleEnum_pkey"})
+	}
+});
+
+export const interviewQuestionResponse = pgTable("InterviewQuestionResponse", {
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint("id", { mode: "number" }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	interviewId: bigint("interview_id", { mode: "number" }).notNull().references(() => interview.id),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	questionId: bigint("question_id", { mode: "number" }).notNull().references(() => questions.id),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	responseId: bigint("response_id", { mode: "number" }).references(() => response.id),
+},
+(table) => {
+	return {
+		interviewQuestionResponsePkey: primaryKey({ columns: [table.id, table.interviewId, table.questionId], name: "InterviewQuestionResponse_pkey"})
 	}
 });

@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from "next/navigation";
 import type { SessionResponse, UseSession } from "@/types";
-import { getStatus, supabase } from "@/lib";
+import { supabase } from "@/lib/supabase/client";
+import {  getStatus } from "@/lib/utils"
 
 export const useSession = (redirectUrl?: string): UseSession => {
   const router = useRouter();

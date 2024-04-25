@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 
 let debounceTimeout: string | number | NodeJS.Timeout | undefined;
 
-export const ReadQuestions = () => {
+export const ViewAllQuestions = () => {
   const [searchValue, setsearchValue] = useState('');
   const [enable, setenable] = useState(true);
 
@@ -42,7 +42,7 @@ export const ReadQuestions = () => {
       ))}
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
+          <Input placeholder="Search question" type="text" className="w-24"/>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -51,11 +51,11 @@ export const ReadQuestions = () => {
               Make changes to your profile here. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          {questiondata?.map((qst) => (
-            <li key={qst.value}>
-              {qst.value}
-            </li>
-          ))}
+            {questiondata?.map((qst) => (
+              <li key={qst.value}>
+                {qst.value}
+              </li>
+            ))}
           <DialogFooter>
             <Button type="submit">Save changes</Button>
           </DialogFooter>
